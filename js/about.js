@@ -11,7 +11,12 @@ function parseTweets(runkeeper_tweets) {
 	console.log(tweet_array);
 	var earliestdate = null
 	var latestdate = null
+	var completedEventCounter = 0
+	var liveEventCounter = 0
+	var achievementEventCounter = 0
+	var miscellaneousEventCounter = 0
 	tweet_array.forEach(function(tweet) {
+		console.log(tweet.source)
 		var time = tweet.time;
 		if (!earliestdate) {
 			earliestdate = time
@@ -28,14 +33,35 @@ function parseTweets(runkeeper_tweets) {
 				latestdate = time
 			}
 		}
+		if(tweet.source === "completed_event") {
+			completedEventCounter += 1
+		}
+		if(tweet.source === "live_event") {
+			liveEventCounter += 1
+		}
+
+		if(tweet.source === "achievement") {
+			achievementEventCounter += 1
+		}
+		if(tweet.source === "miscellaneous") {
+			miscellaneousEventCounter += 1
+		}
 	});
-	console.log(earliestdate, latestdate)
+	console.log(completedEventCounter, liveEventCounter,achievementEventCounter, miscellaneousEventCounter )
 	//This line modifies the DOM, searching for the tag with the numberTweets ID and updating the text.
 	//It works correctly, your task is to update the text of the other tags in the HTML file!
 	document.getElementById('numberTweets').innerText = tweet_array.length;	
 	const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 	document.getElementById('firstDate').innerText = earliestdate.toLocaleDateString(undefined, options)
 	document.getElementById('lastDate').innerText = latestdate.toLocaleDateString(undefined, options)
+	document.querySelector('.completedEvents').innerText = completedEventCounter;
+	document.querySelector('.liveEvents').innerText = liveEventCounter;
+	document.querySelector('.achievements').innerText = achievementEventCounter;
+	document.querySelector('.miscellaneous').innerText = miscellaneousEventCounter;
+	document.querySelector('.completedEventsPct').innerText = (completedEventCounter/tweet_array.length).toLocaleString('en-GB', { style: 'percent' , minimumFractionDigits: 2});
+	document.querySelector('.liveEventsPct').innerText = (liveEventCounter/tweet_array.length).toLocaleString('en-GB', { style: 'percent' , minimumFractionDigits: 2});
+	document.querySelector('.achievementsPct').innerText = (achievementEventCounter/tweet_array.length).toLocaleString('en-GB', { style: 'percent' , minimumFractionDigits: 2});
+	document.querySelector('.miscellaneousPct').innerText = (miscellaneousEventCounter/tweet_array.length).toLocaleString('en-GB', { style: 'percent' , minimumFractionDigits: 2});
 }
 
 //Wait for the DOM to load

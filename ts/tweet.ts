@@ -10,29 +10,56 @@ class Tweet {
 	//returns either 'live_event', 'achievement', 'completed_event', or 'miscellaneous'
     get source():string {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
-        return "unknown";
+        if(this.text.toLowerCase().includes("completed")){
+            return 'completed_event'
+        }
+        if(this.text.toLowerCase().includes("now")) {
+            return 'live_event'
+        }
+        if (this.text.toLowerCase().includes("achieve")) {
+            return 'achievement'
+        }
+    
+        
+        return "miscellaneous";
     }
 
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
-        //TODO: identify whether the tweet is written
-        return false;
+        if(this.text.toLowerCase().startsWith("just completed a")) {
+            return false
+        }
+        else{
+            return true 
+        }
     }
 
     get writtenText():string {
         if(!this.written) {
             return "";
         }
-        //TODO: parse the written text from the tweet
-        return "";
+        return this.text.split("http")[0];
     }
 
     get activityType():string {
         if (this.source != 'completed_event') {
             return "unknown";
         }
+        if(this.text.includes("mi")) {
+            var arr = this.text.split(" ")
+            var i = arr.indexOf("mi")
+            var activityType = arr[i + 1]
+            return activityType
+        }
+
+        if(this.text.includes("km")) {
+            var arr = this.text.split(" ")
+            var i = arr.indexOf("km")
+            var activityType = arr[i + 1]
+            return activityType
+        }
         //TODO: parse the activity type from the text of the tweet
-        return "";
+        return 'unknown';
     }
 
     get distance():number {
@@ -40,6 +67,20 @@ class Tweet {
             return 0;
         }
         //TODO: prase the distance from the text of the tweet
+        if(this.text.includes("mi")) {
+            var arr = this.text.split(" ")
+            var i = arr.indexOf("mi")
+            var distance = parseFloat(arr[i - 1]) ||0
+            return distance
+        }
+
+        if(this.text.includes("km")) {
+            var arr = this.text.split(" ")
+            var i = arr.indexOf("km")
+            var distance = parseFloat(arr[i - 1]) ||0
+            distance = distance/1.609
+            return distance
+        }
         return 0;
     }
 
