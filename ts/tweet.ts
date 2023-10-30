@@ -10,7 +10,7 @@ class Tweet {
 	//returns either 'live_event', 'achievement', 'completed_event', or 'miscellaneous'
     get source():string {
         //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
-        if(this.text.toLowerCase().includes("completed")){
+        if(this.text.toLowerCase().includes("completed") || this.text.toLowerCase().includes("posted")){
             return 'completed_event'
         }
         if(this.text.toLowerCase().includes("now")) {
@@ -26,19 +26,43 @@ class Tweet {
 
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
-        if(this.text.toLowerCase().startsWith("just completed a")) {
+        var tweetText : any = this.text
+        tweetText = tweetText.split("http")[0]
+        tweetText = tweetText.split(" ")
+        if (tweetText.length === 12
+            && tweetText[0] === "Just"
+            && tweetText[2] == "a"
+            && tweetText[7].toLowerCase().includes("runkeeper")
+
+
+        ) {
             return false
         }
-        else{
-            return true 
-        }
+        return true
+
+
     }
 
     get writtenText():string {
         if(!this.written) {
             return "";
+
         }
-        return this.text.split("http")[0];
+        var writtenText = this.text.split("http")[0]
+        if (writtenText.includes("run")) {
+            return writtenText.split("run")[1]
+        }
+        if (writtenText.includes("walk")) {
+            return writtenText.split("walk")[1]
+        
+
+        }
+        if (writtenText.includes("bike")) {
+            return writtenText.split("bike")[1]
+        }
+
+        return writtenText;
+        
     }
 
     get activityType():string {
@@ -86,6 +110,7 @@ class Tweet {
 
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
-        return "<tr></tr>";
+
+        return `<tr><td>${rowNumber}</td><td>${this.activityType}</td><td>${this.text}</td></tr>`;
     }
 }
